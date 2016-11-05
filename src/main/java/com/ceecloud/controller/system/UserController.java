@@ -233,6 +233,7 @@ public class UserController extends BaseController {
 		UserFormMap userFormMap1 = userMapper.findById(userFormMap);
 		userFormMap.put("accountName",userFormMap1.get("username"));
 		userFormMap.put("password", userFormMap.get("newpassword"));
+		userFormMap.put("credentialsSalt",userFormMap1.get("credentialsSalt"));
 		//这里对修改的密码进行加密
 		PasswordHelper passwordHelper = new PasswordHelper();
 		passwordHelper.encryptPassword(userFormMap);
@@ -242,7 +243,7 @@ public class UserController extends BaseController {
 		if(as.getBoolean("status")) {
 			JSONObject as1 = httpClientUtil.doGet(liveDomain + "CasUserSync_updateCasUser.action", "username=" + userFormMap1.get("username") + "&password=" + userFormMap.get("newpassword") + "&casId=" + userFormMap.get("id"));
 			if(as1.getBoolean("status")){
-				System.out.println("add is ok!");
+				System.out.println("editpassword is ok!");
 			}
 		}
 		return "success";
