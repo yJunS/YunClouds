@@ -9,7 +9,7 @@ package com.ceecloud.controller.index;
 public class InitController {
 	
 	public void init() {
-		System.err.println("000000000");
+		System.err.println("00000000000");
 	}
 	 
 }
