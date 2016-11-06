@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceecloud.mapper.UserMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		id,
+		username,
+		(select name from t_person where t_person.id = t_user.personId) name,
+		(select email from t_person where t_person.id = t_user.personId) email,
+		(select fax from t_person where t_person.id = t_user.personId) fax,
+		(select mobile1 from t_person where t_person.id = t_user.personId) mobile,
+		(select group_concat(roleName) from t_role
+		where t_role.id = t_user.role) roleName,
+		password,
+		isLock,
+		state,
+		role,
+		personId,
+		credentialsSalt,
+		(select id from t_company where t_company.id = (select companyId from t_person where t_person.id = t_user.personId)) companyId,
+		(select name from t_company where t_company.id = (select companyId from t_person where t_person.id = t_user.personId)) companyName
+	</sql>
+
+	<select id="findUserPage" resultType="com.ceecloud.entity.UserFormMap">
+		select
+		<include refid="selectId" />
+		from t_user
+		where 1 = 1
+		<if test="username != null and username != ''">
+			and username like '%${username}%'
+		</if>
+		<if test="column != null">
+			order by ${column} ${sort}
+		</if>
+	</select>
+
+	<select id="findByUsername" resultType="com.ceecloud.entity.UserFormMap">
+		select
+		<include refid="selectId" />
+		from t_user
+		where username = #{accountName}
+	</select>
+
+	<select id="findById" resultType="com.ceecloud.entity.UserFormMap">
+		select
+		<include refid="selectId" />
+		from t_user
+		where id = #{id}
+	</select>
+	
+</mapper>
