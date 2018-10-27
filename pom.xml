@@ -141,10 +141,11 @@
       <artifactId>jackson-mapper-lgpl</artifactId>
       <version>1.9.6</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.1.4</version>
+      <version>2.9.6</version>
     </dependency>
     <!-- ############################################## -->
     <!-- javax提供的annotation -->
@@ -273,10 +274,11 @@
       <artifactId>lanyuan-notebook-3.1v</artifactId>
       <version>3.1</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.3</version>
+      <version>4.5.5</version>
     </dependency>
   </dependencies>
   <build>
