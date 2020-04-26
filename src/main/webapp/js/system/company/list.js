@@ -4,10 +4,10 @@ $(function() {
 	
 	grid = lyGrid({
 		pagId : 'paging',
-		l_column : [ {
+		l_column : [ /*{
 			colkey : "id",
 			name : "id",
-		}, {
+		},*/ {
 			colkey : "name",
 			name : "公司名称",
 			isSort:true,
@@ -15,7 +15,11 @@ $(function() {
 			colkey : "typeName",
 			name : "公司类型",
 			isSort:true,
-		},{
+		}, {
+            colkey : "partName",
+            name : "所属园区",
+            isSort:true,
+        },{
 			colkey : "selectPerson",
 			name : "查看公司人员",
 			renderData:function(value,rowData,data,rowIndex){

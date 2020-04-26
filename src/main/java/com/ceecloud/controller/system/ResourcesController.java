@@ -13,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +84,35 @@ public class ResourcesController extends BaseController {
 	 */
 	@RequestMapping("list")
 	public String list(Model model) {
-		model.addAttribute("res", findByRes());
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+		List<ResourcesFormMap> resourcesFormMapList = findByRes();
+		ResourcesFormMap resFormMap1 = new ResourcesFormMap();
+		resFormMap1.put("parentId",getPara("id"));
+		resFormMap1.put("roleId",userFormMap.get("role"));
+		String order = " order by level asc";
+		resFormMap1.put("$orderby", order);
+		List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
+		for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
+			Object o =resFormMap.get("description");
+			if(o!=null&&!Common.isEmpty(o.toString())){
+				resFormMap.put("description",Common.stringtohtml(o.toString()));
+			}
+		}
+		for(int i = 0;i<resourcesFormMapList1.size();i++){
+			ResourcesFormMap resourcesFormMap = resourcesFormMapList1.get(i);
+			boolean as = false;
+			for(int j=0;j<resourcesFormMapList.size();j++){
+				if(resourcesFormMap.get("resKey").equals(resourcesFormMapList.get(j).get("resKey"))){
+					as = true;
+					break;
+				}
+			}
+			if(!as){
+				resourcesFormMapList.add(resourcesFormMap);
+			}
+		}
+		model.addAttribute("res", resourcesFormMapList);
 		return Common.BACKGROUND_PATH + "/system/resources/list";
 	}
 
@@ -151,6 +182,8 @@ public class ResourcesController extends BaseController {
 		if("2".equals(resFormMap.get("type"))){
 			resFormMap.put("description", Common.htmltoString(resFormMap.get("description")+""));
 		}
+		Integer maxLevel = resourcesMapper.findMaxLevelByParentId(resFormMap);
+		resFormMap.put("level",(maxLevel!=null?maxLevel:0)+1);
 		Object o = resFormMap.get("ishide");
 		if(null==o){
 			resFormMap.set("ishide", "0");
@@ -181,6 +214,8 @@ public class ResourcesController extends BaseController {
 		if("2".equals(resFormMap.get("type"))){
 			resFormMap.put("description", Common.htmltoString(resFormMap.get("description")+""));
 		}
+		Integer maxLevel = resourcesMapper.findMaxLevelByParentId(resFormMap);
+		resFormMap.put("level",(maxLevel!=null?maxLevel:0)+1);
 		Object o = resFormMap.get("ishide");
 		if(null==o){
 			resFormMap.set("ishide", "0");

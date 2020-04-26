@@ -1,8 +1,8 @@
 //单独验证某一个input  class="checkpass"
 jQuery.validator.addMethod("checkacc", function(value, element) {
 	return this.optional(element)
-			|| ((value.length <= 30) && (value.length >= 3));
-}, "账号由3至30位字符组合构成");
+			|| ((value.length <= 30) && (value.length >= 3) && checknum(value));
+}, "账号由3至30位英文和数字组合构成");
 $(function() {
 	$("form").validate({
 		submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
@@ -19,7 +19,9 @@ $(function() {
 						$("#form")[0].reset();
 					} else {
 						if(data == "error"){
-							alert("不能选择多个角色");
+							layer.alert("不能选择多个角色");
+						}else if(data == "selectError"){
+                            layer.alert("请选择角色");
 						}else{
 							layer.msg('更新失败！', 3);
 						}
@@ -28,24 +30,76 @@ $(function() {
 			});
 		},
 		rules : {
-			"userFormMap.accountName" : {
+			"userFormMap.username" : {
 				required : true,
 				remote : { // 异步验证是否存在
 					type : "POST",
-					url : 'isExist.shtml',
+					url : 'isUserExist.shtml',
 					data : {
 						name : function() {
-							return $("#accountName").val();
+							return $("#username").val();
 						}
 					}
 				}
-			}
+			},
+            "userFormMap.name" : {
+                required : true
+            },
+            "userFormMap.identityNum" : {
+                required : true,
+                isIdCardNo : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isidentityNumExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#identityNum").val();
+                        }
+                    }
+                }
+            },
+            "selectGroups" : {
+                required : true
+            },
+            "userFormMap.mobile" : {
+                isMobile : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isMobileExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#mobile").val();
+                        }
+                    }
+                }
+            },
+            "userFormMap.email" : {
+                email:true
+            }
 		},
 		messages : {
-			"userFormMap.accountName" : {
-				required : "请输入账号",
-				remote : "该账号已经存在"
-			}
+			"userFormMap.username" : {
+				required : "请输入用户名",
+				remote : "该用户名已经存在"
+			},
+            "userFormMap.name" : {
+                required : "请输入姓名"
+            },
+            "userFormMap.identityNum" : {
+                required : "请输入身份证号码",
+                isIdCardNo : "请输入正确的身份证号码",
+                remote : "该身份证号已经存在"
+            },
+            "selectGroups" : {
+                required : "请选择角色"
+            },
+            "userFormMap.mobile" : {
+                isMobile : "请输入正确的手机号",
+                remote : "该手机号已存在"
+            },
+            "userFormMap.email" : {
+                email:"请输入正确的email"
+            }
 		},
 		errorPlacement : function(error, element) {// 自定义提示错误位置
 			$(".l_err").css('display', 'block');
@@ -57,3 +111,12 @@ $(function() {
 		}
 	});
 });
+function checknum(value) {
+    var Regx = /^[A-Za-z0-9]*$/;
+    if (Regx.test(value)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}

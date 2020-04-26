@@ -13,9 +13,9 @@
 		(select name from t_person where t_person.id = t_user.personId) name,
 		(select email from t_person where t_person.id = t_user.personId) email,
 		(select fax from t_person where t_person.id = t_user.personId) fax,
-		(select mobile1 from t_person where t_person.id = t_user.personId) mobile,
-		(select group_concat(roleName) from t_role
-		where t_role.id = t_user.role) roleName,
+		(select mobile from t_person where t_person.id = t_user.personId) mobile,
+		(select identityNum from t_person where t_person.id = t_user.personId) identityNum,
+		(select group_concat(roleName) from t_role where t_role.id = t_user.role) roleName,
 		password,
 		isLock,
 		state,
@@ -23,19 +23,21 @@
 		personId,
 		credentialsSalt,
 		(select id from t_company where t_company.id = (select companyId from t_person where t_person.id = t_user.personId)) companyId,
-		(select name from t_company where t_company.id = (select companyId from t_person where t_person.id = t_user.personId)) companyName
+		(select name from t_company where t_company.id = (select companyId from t_person where t_person.id = t_user.personId)) companyName,
+		(select cardNumber from t_card where id = (select cardId from t_user_card where t_user.id = t_user_card.userId)) cardNumber,
+		(select password from t_card where id = (select cardId from t_user_card where t_user.id = t_user_card.userId)) cardPassword
 	</sql>
 
 	<select id="findUserPage" resultType="com.ceecloud.entity.UserFormMap">
 		select
 		<include refid="selectId" />
 		from t_user
-		where 1 = 1
+		where 1 = 1 and role != '1'
 		<if test="username != null and username != ''">
-			and username like '%${username}%'
+			and username like #{username}
 		</if>
 		<if test="column != null">
-			order by ${column} ${sort}
+			order by #{column} #{sort}
 		</if>
 	</select>
 
@@ -52,5 +54,58 @@
 		from t_user
 		where id = #{id}
 	</select>
-	
+
+	<select id="findCompanyManager" resultType="com.ceecloud.entity.UserFormMap">
+		SELECT
+		<include refid="selectId"/>
+		from t_user
+		where 1 = 1 and role = 4
+		<if test="companyId != null and companyId != ''">
+			and companyId = #{companyId}
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+
+	<select id="findFreePerson" resultType="com.ceecloud.entity.UserFormMap">
+		SELECT
+		<include refid="selectId"/>
+		from t_user
+		where 1 = 1
+		<if test="role != null and role != ''">
+			and role = #{role}
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+	<select id="findByPersonId" resultType="com.ceecloud.entity.UserFormMap">
+		select
+		<include refid="selectId"/>
+		from t_user
+		where 1 = 1
+		<if test="personId != null and personId != ''">
+			and personId = #{personId}
+		</if>
+	</select>
+
+	<insert id="addUserCard">
+		insert into t_user_card (userId,cardId) value (#{userId},#{cardId})
+	</insert>
+
+	<select id="findUserCardById" resultType="com.ceecloud.entity.UserCardFormMap">
+		SELECT
+		<include refid="selectId"/>
+		from t_user_card
+		where 1 = 1
+		and userId = #{userId}
+	</select>
+
+	<delete id="deleteUserCardByUserId">
+		delete from
+		t_user_card
+		where
+		userId = #{userId}
+	</delete>
 </mapper>

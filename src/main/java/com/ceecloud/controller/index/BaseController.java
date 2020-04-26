@@ -66,7 +66,7 @@ public class BaseController {
 		// 资源ID
 		String id = getPara("id");
 		// 获取request
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();  
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 		// 通过工具类获取当前登录的bean
 		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
 		// user id
@@ -74,6 +74,8 @@ public class BaseController {
 		ResourcesFormMap resQueryForm = new ResourcesFormMap();
 		resQueryForm.put("parentId", id);
 		resQueryForm.put("userId", userId);
+		String order = " order by level asc";
+		resQueryForm.put("$orderby", order);
 		List<ResourcesFormMap> rse = resourcesMapper.findRes(resQueryForm);
 		//List<ResFormMap> rse = resourcesMapper.findByAttribute("parentId", id, ResFormMap.class);
 		for (ResourcesFormMap resFormMap : rse) {

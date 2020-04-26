@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceecloud.mapper.CardTranInfoMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		id,
+		cardId,
+		(select cardNumber from t_card where t_card_tranInfo.cardId = t_card.id) cardNumber,
+		(select userId from t_user_card where t_card_tranInfo.cardId = t_user_card.cardId) userId,
+		(SELECT name from t_person where t_person.id = (select personId from t_user where t_user.id = (select userId from t_user_card where t_card_tranInfo.cardId = t_user_card.cardId))) name,
+		merchantId,
+		merchantName,
+		terminalId,
+		tranType,
+		tranDate,
+		tranAmount,
+		hostTranLs
+	</sql>
+
+	<select id="findCardTranInfoPage" resultType="com.ceecloud.entity.CardTranInfoFormMap">
+		select
+		<include refid="selectId" />
+		from t_card_tranInfo
+		where 1 = 1
+		<if test="cardId != null">
+			and cardId = #{cardId}
+		</if>
+		<if test="startTime != null">
+			and tranDate &gt;= '#{startTime}'
+		</if>
+		<if test="endTime != null" >
+			and tranDate &lt;= '#{endTime}'
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+</mapper>

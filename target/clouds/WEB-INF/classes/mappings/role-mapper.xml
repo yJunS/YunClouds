@@ -11,6 +11,7 @@
 		id,
 		roleName,
 		description,
+		roleKey,
 		state
 	</sql>
 	<select id="seletUserRole" resultType="com.ceecloud.entity.RoleFormMap">
@@ -19,6 +20,6 @@
 	 from t_role
 		where t_role.id
 		in (SELECT role FROM t_user WHERE
-		id=#{userId})
+		id=${userId})
 	</select>
 </mapper>

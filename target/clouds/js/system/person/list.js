@@ -4,10 +4,10 @@ $(function() {
 	var companyId = $("#companyId").val();
 	grid = lyGrid({
 		pagId : 'paging',
-		l_column : [ {
+		l_column : [ /*{
 			colkey : "id",
 			name : "id",
-		}, {
+		}, */{
 			colkey : "username",
 			name : "用户名",
 			isSort:true,
@@ -56,7 +56,7 @@ $(function() {
 		delAccount();
 	});
 	$("#permissions").click("click", function() {
-		permissions();
+        fixperson();
 	});
 });
 function editFun() {
@@ -73,11 +73,12 @@ function editFun() {
 	});
 }
 function addFun() {
+    var companyId = $("#companyId").val();
 	pageii = layer.open({
 		title : "新增",
 		type : 2,
 		area : [ "600px", "80%" ],
-		content : rootPath + '/person/addUI.shtml'
+		content : rootPath + '/person/addUI.shtml?companyId='+companyId
 	});
 }
 function delAccount() {
@@ -99,17 +100,12 @@ function delAccount() {
 		}
 	});
 }
-function permissions() {
-	var cbox = grid.getSelectedCheckbox();
-	if (cbox.length > 1 || cbox == "") {
-		layer.msg("请选择一个对象！");
-		return;
-	}
-	var url = rootPath + '/resources/permissions.shtml?userId='+cbox;
+function fixperson() {
+	var url = rootPath + '/person/toFreePersonUI.shtml';
 	pageii = layer.open({
-		title : "分配权限",
+		title : "分配角色",
 		type : 2,
-		area : [ "700px", "80%" ],
+		area : [ "70%", "80%" ],
 		content : url
 	});
 }

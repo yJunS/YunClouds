@@ -18,7 +18,7 @@
 	select 
 	<include refid="selectId"/>
 	 from t_dept
-		where companyId = #{companyId}
+		where companyId = ${companyId}
 		and isAvailable is true
 	</select>
 
@@ -27,6 +27,6 @@
 		<include refid="selectId"/>
 		from t_dept
 		where isAvailable is true
-		and id in (select deptId from t_dept_person where companyId = #{companyId} and personId = #{personId})
+		and id in (select deptId from t_dept_person where companyId = ${companyId} and personId = ${personId})
 	</select>
 </mapper>

@@ -61,7 +61,7 @@
 									14：........<br>
 								</div></div></div>
 		</td>--%>
-		<td style="width: 290px;"><div
+		<%--<td style="width: 290px;"><div
 				style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; WIDTH: 100%; HEIGHT: 148px; border: 1px solid #cacaca; background: #FFFFFF">
 				<div
 					style="WIDTH: 100%; clear: both; height: 31px; background-image: url(http://www.tianqi.com/static/images/code/bg_13.jpg); background-repeat: repeat-x; border-bottom: 1px solid #cacaca;">
@@ -72,7 +72,7 @@
 				<iframe width="400" scrolling="no" height="120" frameborder="0"
 					allowtransparency="true"
 					src="http://i.tianqi.com/index.php?c=code&id=19&bgc=%23FFFFFF&bdc=%23&icon=1&temp=1&num=2"></iframe>
-			</div></td>
+			</div></td>--%>
 		</tr>
 		</table>
 		</div>

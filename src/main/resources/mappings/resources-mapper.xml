@@ -55,7 +55,7 @@
 		<include refid="selectId" />
 		from t_resources where id in(
 		select resId from t_res_user
-		where userId=#{userId})
+		where userId = #{userId})
 	</select>
 	<update id="updateSortOrder" parameterType="java.util.List">
           <foreach collection="list" item="item" index="index" open="" close="" separator=";">
@@ -66,15 +66,28 @@
                 where id = #{item.id}
          </foreach>
 	</update>
-	<!-- 删 -->
-	<delete id="deleteResourcesRole" parameterType="String">
+	<!-- 根据角色删除关系权限 -->
+	<delete id="deleteResourcesRole">
 		delete from
-		t_res_roles
-		where role_id=#{id}
+		t_role_res
+		where roleId=#{roleId}
 	</delete>
 
 	<insert id="addRoleRes">
 		insert into t_res_roles (role_id,resc_id) value (#{roleId},#{resId})
 	</insert>
+
+	<delete id="deleteResUser">
+			delete from
+			t_res_user
+			where userId = #{userId}
+	</delete>
+
+	<select id="findMaxLevelByParentId" resultType="Integer">
+		select
+		max(level) as level
+		from t_resources
+		where parentId = #{parentId}
+	</select>
 
 </mapper>

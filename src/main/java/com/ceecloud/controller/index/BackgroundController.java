@@ -119,9 +119,12 @@ public class BackgroundController extends BaseController {
 		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
 		ResourcesFormMap resFormMap = new ResourcesFormMap();
 		resFormMap.put("userId", userFormMap.get("id"));
+		String order = " order by level asc";
+		resFormMap.put("$orderby", order);
 		List<ResourcesFormMap> mps = resourcesMapper.findRes(resFormMap);
 		ResourcesFormMap resFormMap1 = new ResourcesFormMap();
 		resFormMap1.put("roleId",userFormMap.get("role"));
+		resFormMap1.put("$orderby", order);
 		List<ResourcesFormMap> mps1 = resourcesMapper.findRes(resFormMap1);
 		//List<ResFormMap> mps = resourcesMapper.findByWhere(new ResFormMap());
 		List<TreeObject> list = new ArrayList<TreeObject>();

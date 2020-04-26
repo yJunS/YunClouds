@@ -4,10 +4,10 @@ $(function() {
 	
 	grid = lyGrid({
 		pagId : 'paging',
-		l_column : [ {
+		l_column : [ /*{
 			colkey : "id",
 			name : "id",
-		}, {
+		},*/ {
 			colkey : "name",
 			name : "用户名",
 			isSort:true,
@@ -23,9 +23,16 @@ $(function() {
 			name : "所属公司",
 			isSort:true
 		}, {
-			colkey : "isLock",
+			colkey : "isLocked",
 			name : "账号状态",
 			width : '90px',
+            renderData:function(value,rowData,data,rowIndex){
+               if(data.isLock==0){
+               	 return "正常";
+			   } else{
+               	 return "已锁定";
+			   }
+            },
 			isSort:true
 		}],
 		jsonUrl : rootPath + '/user/findByPage.shtml',

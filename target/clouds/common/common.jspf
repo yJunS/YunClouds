@@ -24,6 +24,7 @@ user-scalable - 用户是否可以手动缩放
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/css/lanyuan.css" type="text/css">
+
 	<!-- base start 重要部分不可删改-->
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.v1.js"></script>
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
@@ -34,6 +35,8 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/common/common.js"></script>
 <script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/card.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/validate.min.js"></script>
 <!--[if lt IE 9]> <script src="${ctx}/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
 <link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
 <link href="${ctx}/js/date/font-awesome.min.css" rel="stylesheet">
@@ -41,9 +44,14 @@ user-scalable - 用户是否可以手动缩放
     时间控件 -------- 可能导致样式问题,和某些js事件失效 如加上,,自行处理
 <link rel="stylesheet" type="text/css" media="all" href="${ctx}/js/date/daterangepicker-bs3.css" />
 <script type="text/javascript" src="${ctx}/js/date/bootstrap.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/date/moment.js"></script>
-<script type="text/javascript" src="${ctx}/js/date/daterangepicker.js"></script>--%>
-<script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> 
+<script type="text/javascript" src="${ctx}/js/date/moment.js"></script>--%>
+<script type="text/javascript" src="${ctx}/js/date/daterangepicker.js"></script>
+<script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script>
+<link href="${ctx}/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="https://cdn.bootcss.com/moment.js/2.18.1/moment-with-locales.min.js"></script>
+<script src="${ctx}/js/date/bootstrap-datetimepicker.min.js"></script>
+<script src="${ctx}/js/date/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
 <style type="text/css">
 .l_err{
     background: none repeat scroll 0 0 #FFFCC7;

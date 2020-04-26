@@ -1,8 +1,8 @@
 //单独验证某一个input  class="checkpass"
 jQuery.validator.addMethod("checkacc", function(value, element) {
 	return this.optional(element)
-			|| ((value.length <= 30) && (value.length >= 3));
-}, "账号由3至30位字符组合构成");
+			|| ((value.length <= 30) && (value.length >= 6) && checknum(value));
+}, "账号由6至30位英文或数字组合构成");
 $(function() {
 	$("form").validate({
 		submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
@@ -24,23 +24,59 @@ $(function() {
 			});
 		},
 		rules : {
-			"companyFormMap.accountName" : {
+			"personFormMap.username" : {
 				required : true,
 				remote : { // 异步验证是否存在
 					type : "POST",
-					url : 'isExist.shtml',
+					url : 'isUserExist.shtml',
 					data : {
 						name : function() {
-							return $("#accountName").val();
+							return $("#username").val();
 						}
 					}
 				}
+			},
+            "personFormMap.identityNum" : {
+                required : true,
+                isIdCardNo : true
+            },
+            "personFormMap.mobile" : {
+                isMobile : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isMobileExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#mobile").val();
+                        }
+                    }
+                }
+            },
+            "personFormMap.email" : {
+                email:true
+            },
+			"personFormMap.telephone" : {
+                isTel : true
 			}
 		},
 		messages : {
-			"companyFormMap.accountName" : {
-				required : "请输入公司名称",
-				remote : "该公司名称已经存在"
+			"personFormMap.username" : {
+				required : "请输入用户名",
+				remote : "该用户名已经存在"
+			},
+            "personFormMap.identityNum" : {
+                required : "请输入身份证号码",
+                isIdCardNo : "请输入正确的身份证号码"
+            },
+            "personFormMap.mobile" : {
+                isMobile : "请输入正确的手机号",
+				remote : "该手机号已经存在"
+            },
+            "personFormMap.email" : {
+                email:"请输入正确的email"
+            },
+			"personFormMap.telephone" : {
+                isTel : "请输入正确的电话号码"
 			}
 		},
 		errorPlacement : function(error, element) {// 自定义提示错误位置
@@ -53,3 +89,12 @@ $(function() {
 		}
 	});
 });
+function checknum(value) {
+    var Regx = /^[A-Za-z0-9]*$/;
+    if (Regx.test(value)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}

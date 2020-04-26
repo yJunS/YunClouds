@@ -1,6 +1,7 @@
 package com.ceecloud.shiro;
 
 
+import com.ceecloud.entity.ResUserFormMap;
 import com.ceecloud.entity.ResourcesFormMap;
 import com.ceecloud.entity.UserFormMap;
 import com.ceecloud.mapper.ResourcesMapper;
@@ -62,7 +63,9 @@ public class MyRealm1 extends AuthorizingRealm {
 		String loginName = SecurityUtils.getSubject().getPrincipal().toString();
 		if (loginName != null) {
 			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
-			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(userId);
+			ResUserFormMap resUserFormMap = new ResUserFormMap();
+			resUserFormMap.set("userId", userId);
+			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(resUserFormMap);
 			// 权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			// 用户的角色集合

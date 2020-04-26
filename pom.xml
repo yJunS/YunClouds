@@ -278,6 +278,11 @@
       <artifactId>httpclient</artifactId>
       <version>4.3</version>
     </dependency>
+      <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>RELEASE</version>
+      </dependency>
   </dependencies>
   <build>
     <finalName>clouds</finalName>
@@ -301,6 +306,14 @@
         <configuration>
           <skip>true</skip>
           <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
     </plugins>

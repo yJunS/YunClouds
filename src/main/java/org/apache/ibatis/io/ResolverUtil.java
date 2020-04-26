@@ -46,7 +46,7 @@ import java.util.Set;
  * <p>
  * General searches are initiated by calling the
  * {@link #find(org.apache.ibatis.io.ResolverUtil.Test, String)} ()} method and
- * supplying a package name and a Test instance. This will cause the named
+ * supplying a package name and a test instance. This will cause the named
  * package <b>and all sub-packages</b> to be scanned for classes that meet the
  * test. There are also utility methods for the common use cases of scanning
  * multiple packages for extensions of particular classes, or classes annotated
@@ -90,7 +90,7 @@ public class ResolverUtil<T> {
 	}
 
 	/**
-	 * A Test that checks to see if each class is assignable to the provided
+	 * A test that checks to see if each class is assignable to the provided
 	 * class. Note that this test will match the parent type itself if it is
 	 * presented for matching.
 	 */
@@ -125,7 +125,7 @@ public class ResolverUtil<T> {
 	}
 
 	/**
-	 * A Test that checks to see if each class is annotated with a specific
+	 * A test that checks to see if each class is annotated with a specific
 	 * annotation. If it is, then the test returns true, otherwise false.
 	 */
 	public static class AnnotatedWith
@@ -257,8 +257,8 @@ public class ResolverUtil<T> {
 
 	/**
 	 * Scans for classes starting at the package provided and descending into
-	 * subpackages. Each class is offered up to the Test as it is discovered,
-	 * and if the Test returns true the class is retained. Accumulated classes
+	 * subpackages. Each class is offered up to the test as it is discovered,
+	 * and if the test returns true the class is retained. Accumulated classes
 	 * can be fetched by calling {@link #getClasses()}.
 	 * 
 	 * @param test
@@ -309,7 +309,7 @@ public class ResolverUtil<T> {
 
 	/**
 	 * Add the class designated by the fully qualified class name provided to
-	 * the set of resolved classes if and only if it is approved by the Test
+	 * the set of resolved classes if and only if it is approved by the test
 	 * supplied.
 	 * 
 	 * @param test

@@ -11,4 +11,10 @@ import java.util.List;
 public interface PersonMapper extends BaseMapper {
 
     public List<PersonFormMap> findPersonPage(PersonFormMap personFormMap);
+
+    public List<PersonFormMap> findCompanyManager(PersonFormMap personFormMap);
+
+    public List<PersonFormMap> findFreePerson(PersonFormMap personFormMap);
+
+    public PersonFormMap findById(PersonFormMap personFormMap);
 }

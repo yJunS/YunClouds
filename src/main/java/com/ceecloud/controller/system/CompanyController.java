@@ -24,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +53,8 @@ public class CompanyController  extends BaseController {
         ResourcesFormMap resFormMap1 = new ResourcesFormMap();
         resFormMap1.put("parentId",getPara("id"));
         resFormMap1.put("roleId",userFormMap.get("role"));
+        String order = " order by level asc";
+        resFormMap1.put("$orderby", order);
         List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
         for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
             Object o =resFormMap.get("description");
@@ -84,6 +87,9 @@ public class CompanyController  extends BaseController {
         companyFormMap=toFormMap(companyFormMap, pageNow, pageSize,companyFormMap.getStr("orderby"));
         companyFormMap.put("column", column);
         companyFormMap.put("sort", sort);
+        if(null !=companyFormMap.getStr("name")){
+            companyFormMap.put("name", "%" + companyFormMap.getStr("name") + "%");
+        }
         pageView.setRecords(companyMapper.findCompanyPage(companyFormMap));//不调用默认分页,调用自已的mapper中findUserPage
         return pageView;
     }
@@ -100,8 +106,16 @@ public class CompanyController  extends BaseController {
     public String addEntity(String txtGroupsSelect){
         try {
             CompanyFormMap companyFormMap = getFormMap(CompanyFormMap.class);
-            if(txtGroupsSelect.indexOf(",")>-1){
-                return "error";
+            String error = "";
+            if(Common.isNotEmpty(companyFormMap.get("partId").toString()) && Integer.valueOf(companyFormMap.get("partId").toString())<=0){
+                error = "partError";
+            }else if(Common.isEmpty(txtGroupsSelect)){
+                error = "selectError";
+            }else if(txtGroupsSelect.indexOf(",")>-1){
+                error = "error";
+            }
+            if (Common.isNotEmpty(error)) {
+                return error;
             }
             companyFormMap.set("type",(!txtGroupsSelect.equals("")?txtGroupsSelect:0));
             companyFormMap.set("state","1");
@@ -109,16 +123,18 @@ public class CompanyController  extends BaseController {
             companyMapper.addEntity(companyFormMap);//新增后返回新增信息
             PersonFormMap personFormMap1 = new PersonFormMap();
             personFormMap1.set("name",companyFormMap.get("contactName"));
+            personFormMap1.set("identityNum",companyFormMap.get("identityNum"));
             personFormMap1.set("email",companyFormMap.get("email"));
-            personFormMap1.set("mobile1",companyFormMap.get("mobile"));
+            personFormMap1.set("mobile",companyFormMap.get("mobile"));
             personFormMap1.set("type","1");
             personFormMap1.set("companyId",companyFormMap.get("id"));
             personFormMap1.set("state","1");
+            personFormMap1.set("partId",companyFormMap.get("partId"));
             personMapper.addEntity(personFormMap1);
             UserFormMap userFormMap = new UserFormMap();
             PasswordHelper passwordHelper = new PasswordHelper();
             userFormMap.set("username",companyFormMap.get("username"));
-            userFormMap.set("password","123456789");
+            userFormMap.set("password","123456");
             userFormMap.set("role","4");
             userFormMap.set("isLock","0");
             userFormMap.set("state","1");
@@ -155,6 +171,7 @@ public class CompanyController  extends BaseController {
             companyFormMap = companyMapper.findbyFrist("id", id, CompanyFormMap.class);
             if(list.size()!=0){
                List<UserFormMap> lst  = userMapper.findByAttribute("personId",String.valueOf(list.get(0).get("id")), UserFormMap.class);
+               companyFormMap.set("identityNum",list.get(0).get("identityNum")!=null?list.get(0).get("identityNum").toString():"");
                companyFormMap.set("username",lst.get(0).get("username"));
             }
             model.addAttribute("company", companyFormMap);
@@ -181,7 +198,7 @@ public class CompanyController  extends BaseController {
         if(list!=null&&list.size()!=0){
             personFormMap1 = list.get(0);
             personFormMap1.set("name",companyFormMap.get("contactName"));
-            personFormMap1.set("mobile1",companyFormMap.get("mobile"));
+            personFormMap1.set("mobile",companyFormMap.get("mobile"));
             personMapper.editEntity(personFormMap1);
         }
         companyMapper.editEntity(companyFormMap);
@@ -197,9 +214,70 @@ public class CompanyController  extends BaseController {
      */
     @RequestMapping("isExist")
     @ResponseBody
-    public boolean isExist(String name) {
+    public boolean isExist(String name,String id) {
+        CompanyFormMap companyFormMap = new CompanyFormMap();
+        if(id!=null) {
+            companyFormMap = companyMapper.findbyFrist("id", id, CompanyFormMap.class);
+        }
         CompanyFormMap account = companyMapper.findbyFrist("name", name, CompanyFormMap.class);
-        if (account == null) {
+        Boolean isTrue = (account!=null && companyFormMap.size()!=0) ? (((account.get("name").toString()).equals(companyFormMap.get("name").toString())) ? true : false) : (account==null) ? true : false;
+        if (account == null || isTrue) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 验证公司联系人用户名是否存在
+     *
+     * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
+     * @param name
+     * @return
+     */
+    @RequestMapping("isUsernameExist")
+    @ResponseBody
+    public boolean isUsernameExist(String name,String id) {
+        CompanyFormMap companyFormMap = new CompanyFormMap();
+        List<PersonFormMap> listPerson = new ArrayList<PersonFormMap>();
+        UserFormMap userFormMap1 = new UserFormMap();
+        if(id!=null){
+            companyFormMap = companyMapper.findbyFrist("id", id, CompanyFormMap.class);
+            PersonFormMap personFormMap = new PersonFormMap();
+            personFormMap.set("companyId",companyFormMap.get("id"));
+            listPerson = personMapper.findCompanyManager(personFormMap);
+            userFormMap1 = userMapper.findbyFrist("personId", listPerson.get(0).get("id").toString(), UserFormMap.class);
+        }
+        UserFormMap userFormMap = userMapper.findbyFrist("username", name, UserFormMap.class);
+        Boolean isTrue = (userFormMap!=null && userFormMap1.size()!=0) ? (((userFormMap.get("username").toString()).equals(userFormMap1.get("username").toString())) ? true : false) : (userFormMap==null) ? true : false;
+        if (userFormMap == null || isTrue) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 验证公司联系人手机号是否存在
+     *
+     * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
+     * @param name
+     * @return
+     */
+    @RequestMapping("isMobileExist")
+    @ResponseBody
+    public boolean isMobileExist(String name,String id) {
+        CompanyFormMap companyFormMap = new CompanyFormMap();
+        List<PersonFormMap> listPerson = new ArrayList<PersonFormMap>();
+        if(id!=null){
+            companyFormMap = companyMapper.findbyFrist("id", id, CompanyFormMap.class);
+            PersonFormMap personFormMap = new PersonFormMap();
+            personFormMap.set("companyId",companyFormMap.get("id"));
+            listPerson = personMapper.findCompanyManager(personFormMap);
+        }
+        PersonFormMap personFormMap = personMapper.findbyFrist("mobile", name, PersonFormMap.class);
+        Boolean isTrue = (personFormMap!=null && companyFormMap.size()!=0) ? (((personFormMap.get("mobile").toString()).equals(listPerson.get(0).get("mobile").toString())) ? true : false) : (personFormMap==null) ? true : false;
+        if (personFormMap == null || isTrue) {
             return true;
         } else {
             return false;

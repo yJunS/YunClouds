@@ -28,8 +28,8 @@
 	</bean>
 	<!--自定义Realm -->
 	<bean id="myRealm" class="com.ceecloud.shiro.MyRealm">
-		<property name="casServerUrlPrefix" value="http://login.ceecloud.cn:8888/cas"/>
-		<property name="casService" value="http://manager.ceecloud.cn:8080/cas"/>
+		<property name="casServerUrlPrefix" value="http://login.peony.cn/cas"/>
+		<property name="casService" value="http://manager.peony.cn:8080/cas"/>
 		<!--<property name="credentialsMatcher" ref="credentialsMatcher" />-->
 		<property name="cachingEnabled" value="true" />
 		<!-- 如需要自定义缓存时间放开以下.修改 ehcache.xml-->
@@ -55,7 +55,7 @@
 	<!-- 配置shiro的过滤器工厂类，id- shiroFilter要和我们在web.xml中配置的过滤器一致 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="http://login.ceecloud.cn:8888/cas?service=http://manager.ceecloud.cn:8080/cas" />
+		<property name="loginUrl" value="http://login.peony.cn/cas?service=http://manager.peony.cn:8080/cas" />
 		<property name="successUrl" value="/index.shtml" />
 		<property name="unauthorizedUrl" value="/denied.jsp" />
 		<!-- 自定义权限配置 -->
@@ -75,11 +75,11 @@
 	</bean>
 
 	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
-		<property name="failureUrl" value="http://login.ceecloud.cn:8888/cas?service=http://manager.ceecloud.cn:8080/cas"></property>
+		<property name="failureUrl" value="http://login.peony.cn/cas?service=http://manager.peony.cn:8080/cas"></property>
 	</bean>
 
 	<bean id="logoutFilter" class="com.ceecloud.shiro.filter.CasLogoutFilter">
-		<property name="redirectUrl" value="http://login.ceecloud.cn:8888/cas/logout?service=http://manager.ceecloud.cn:8080/cas"/>
+		<property name="redirectUrl" value="http://login.peony.cn/cas/logout?service=http://manager.peony.cn:8080/cas"/>
 	</bean>
 
 	<!--自定义filterChainDefinitionMap -->
@@ -119,14 +119,14 @@
     <!-- 会话验证调度器 -->
      <!-- 全局的会话信息检测扫描信息间隔30分钟-->
     <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
-        <property name="sessionValidationInterval" value="1800000"/>
+        <property name="sessionValidationInterval" value="1209600000"/>
         <property name="sessionManager" ref="sessionManager"/>
     </bean>
 
 	 <!-- 会话管理器 -->
 	  <!-- 全局的会话信息设置成30分钟,sessionValidationSchedulerEnabled参数就是是否开启扫描  -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="globalSessionTimeout" value="1209600000"/>
         <property name="deleteInvalidSessions" value="true"/>
         <property name="sessionValidationSchedulerEnabled" value="true"/>
         <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>

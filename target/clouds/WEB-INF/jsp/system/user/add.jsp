@@ -36,7 +36,7 @@ label[class^="btn btn-default"] {
 				<label class="col-sm-3 control-label">用户名</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control checkacc"
-						placeholder="请输入用户名" name="userFormMap.accountName" id="accountName">
+						placeholder="请输入用户名" name="userFormMap.username" id="username">
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
@@ -46,18 +46,30 @@ label[class^="btn btn-default"] {
 				</div>
 				<div class="col-sm-9">
 					<input type="text" class="form-control"
-						placeholder="请输入姓名" name="userFormMap.name" id="userName">
+						placeholder="请输入姓名" name="userFormMap.name" id="name">
 				</div>
 			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">身份证号</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" placeholder="请输入身份证号码"
+						   name="userFormMap.identityNum" id="identityNum">
+				</div>
+			</div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">密码</label>
 				<div class="col-sm-9" style="color: red;">
-					默认密码为:123456789
+					默认密码为:123456
 				</div>
 			</div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group" id="selRole" data-url="/role/selRole.shtml?roleFormMap.id=1,4,5"></div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">是否锁定</label>

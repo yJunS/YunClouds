@@ -14,7 +14,7 @@ public class PasswordHelper {
 	public void encryptPassword(UserFormMap userFormMap) {
 		String salt=randomNumberGenerator.nextBytes().toHex();
 		userFormMap.put("credentialsSalt", salt);
-		String newPassword = new SimpleHash(algorithmName, userFormMap.get("password"), ByteSource.Util.bytes(userFormMap.get("accountName")+salt), hashIterations).toHex();
+		String newPassword = new SimpleHash(algorithmName, userFormMap.get("password"), ByteSource.Util.bytes(userFormMap.get("username")+salt), hashIterations).toHex();
 		userFormMap.put("password", newPassword); 
 	}
 	public static void main(String[] args) {

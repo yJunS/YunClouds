@@ -14,6 +14,9 @@
 		email,
 		mobile,
 		(select type from t_type where t_type.id = t_company.type) typeName,
+		partId,
+		(select partName from t_part where t_part.id = t_company.partId) partName,
+		(select identityNum from t_person where t_person.companyId = t_company.id and t_person.type = '1') identityNum,
 		state,
 		isAvailable
 	</sql>
@@ -23,10 +26,10 @@
 	 from t_company
 		where 1 = 1
 		<if test="name != null and name != ''">
-			and name like '%${name}%'
+			and name like #{name}
 		</if>
 		<if test="column != null">
-			order by ${column} ${sort}
+			order by #{column} #{sort}
 		</if>
 	</select>
 </mapper>

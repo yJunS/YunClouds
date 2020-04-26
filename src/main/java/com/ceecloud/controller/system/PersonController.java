@@ -11,7 +11,6 @@ import com.ceecloud.mapper.UserMapper;
 import com.ceecloud.plugin.PageView;
 import com.ceecloud.util.Common;
 import com.ceecloud.util.DomainProperties;
-import com.ceecloud.util.HttpClientUtil;
 import com.ceecloud.util.PasswordHelper;
 import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
@@ -25,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,6 +66,8 @@ public class PersonController extends BaseController{
         ResourcesFormMap resFormMap1 = new ResourcesFormMap();
         resFormMap1.put("parentId",getPara("id"));
         resFormMap1.put("roleId",userFormMap.get("role"));
+        String order = " order by level asc";
+        resFormMap1.put("$orderby", order);
         List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
         for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
             Object o =resFormMap.get("description");
@@ -107,6 +109,8 @@ public class PersonController extends BaseController{
         ResourcesFormMap resFormMap1 = new ResourcesFormMap();
         resFormMap1.put("parentId",getPara("id"));
         resFormMap1.put("roleId",userFormMap.get("role"));
+        String order = " order by level asc";
+        resFormMap1.put("$orderby", order);
         List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
         for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
             Object o =resFormMap.get("description");
@@ -136,22 +140,29 @@ public class PersonController extends BaseController{
     public PageView findByPage(String pageNow,
                                String pageSize, String column, String sort) throws Exception {
         PersonFormMap personFormMap = getFormMap(PersonFormMap.class);
-        Integer companyId = Integer.valueOf(getPara("companyId"));
-        personFormMap.put("companyId",companyId);
+        String companyId = getPara("companyId");
+        if(Common.isNotEmpty(companyId)) {
+            personFormMap.put("companyId", companyId);
+        }
         personFormMap=toFormMap(personFormMap, pageNow, pageSize,personFormMap.getStr("orderby"));
         personFormMap.put("column", column);
         personFormMap.put("sort", sort);
+        if(null !=personFormMap.getStr("name")){
+            personFormMap.put("name", "%" + personFormMap.getStr("name") + "%");
+        }
         pageView.setRecords(personMapper.findPersonPage(personFormMap));//不调用默认分页,调用自已的mapper中findUserPage
         return pageView;
     }
 
     @RequestMapping("addUI")
     public String addUI(Model model) throws Exception {
+        model.addAttribute("companyId",getPara("companyId"));
         return Common.BACKGROUND_PATH + "/system/person/add";
     }
 
     @RequestMapping("saddUI")
     public String saddUI(Model model) throws Exception {
+        model.addAttribute("companyId",getPara("companyId"));
         return Common.BACKGROUND_PATH + "/system/person/add";
     }
 
@@ -162,11 +173,21 @@ public class PersonController extends BaseController{
     public String addEntity(String txtGroupsSelect){
         try {
             PersonFormMap personFormMap = getFormMap(PersonFormMap.class);
+            if(Common.isEmpty(getPara("companyId"))){
+                String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
+                UserFormMap userFormMap = userMapper.findbyFrist("id",userId,UserFormMap.class);
+                PersonFormMap personFormMap1 = personMapper.findByAttribute("id",userFormMap.get("personId").toString(),PersonFormMap.class).get(0);
+                if(!personFormMap1.get("companyId").toString().equals("0")) {
+                    personFormMap.set("companyId", personFormMap1.get("companyId"));
+                }
+            }
+            personFormMap.set("type", 2);
+            personFormMap.set("state", 1);
             personMapper.addEntity(personFormMap);//新增后返回新增信息
             UserFormMap userFormMap = getFormMap(UserFormMap.class);
             PasswordHelper passwordHelper = new PasswordHelper();
             userFormMap.set("username",personFormMap.get("username"));
-            userFormMap.set("password","123456789");
+            userFormMap.set("password","123456");
             userFormMap.set("newpassword",userFormMap.get("password"));
             userFormMap.set("isLock","0");
             userFormMap.set("state","1");
@@ -177,14 +198,6 @@ public class PersonController extends BaseController{
             userFormMap.set("personId",personFormMap.get("id"));
             passwordHelper.encryptPassword(userFormMap);
             userMapper.addEntity(userFormMap);
-            HttpClientUtil httpClientUtil = new HttpClientUtil();
-            JSONObject as = httpClientUtil.doGet(mymeetingDomain + "CasUserSync_syncCasUser.action","username="+userFormMap.get("username")+"&password="+userFormMap.get("newpassword") + "&casId=" + userFormMap.get("id"));
-            if(as.getBoolean("status")) {
-                JSONObject as1 = httpClientUtil.doGet(liveDomain + "CasUserSync_syncCasUser.action", "username=" + userFormMap.get("username") + "&password=" + userFormMap.get("newpassword") + "&casId=" + userFormMap.get("id"));
-                if(as1.getBoolean("status")){
-                    System.out.println("add is ok!");
-                }
-            }
         } catch (Exception e) {
             throw new SystemException("添加员工异常");
         }
@@ -198,7 +211,13 @@ public class PersonController extends BaseController{
     public String deleteEntity() throws Exception {
         String[] ids = getParaValues("ids");
         for (String id : ids) {
-            personMapper.deleteByAttribute("id", id, PersonFormMap.class);
+            UserFormMap userFormMap = new UserFormMap();
+            userFormMap = userMapper.findbyFrist("personId",id,UserFormMap.class);
+            userMapper.deleteByAttribute("personId", id, UserFormMap.class);
+            personMapper.deleteByAttribute("id",id,PersonFormMap.class);
+            ResUserFormMap resUserFormMap = new ResUserFormMap();
+            resUserFormMap.set("userId", userFormMap.get("id"));
+            resourcesMapper.deleteResUser(resUserFormMap);
         }
         return "success";
     }
@@ -260,18 +279,119 @@ public class PersonController extends BaseController{
         return "success";
     }
 
+    @RequestMapping("toFreePersonUI")
+    public String toFreePersonUI(Model model) {
+        return Common.BACKGROUND_PATH + "/system/person/freelist";
+    }
+
+    @ResponseBody
+    @RequestMapping("findFreePerson")
+    public PageView findFreePerson(String pageNow,
+                                   String pageSize, String column, String sort) throws Exception {
+        String name = getPara("name");
+        PersonFormMap person = getFormMap(PersonFormMap.class);
+        person = toFormMap(person, pageNow, pageSize, person.getStr("orderby"));
+        if(Common.isNotEmpty(name)){
+            person.put("name", name);
+        }
+        person.put("column", column);
+        person.put("sort", sort);
+        if(null !=person.getStr("name")){
+            person.put("name", "%" + person.getStr("name") + "%");
+        }
+        List<PersonFormMap> personList = personMapper.findFreePerson(person);
+        pageView.setRecords(personList);//不调用默认分页,调用自已的mapper中findUserPage
+        return pageView;
+    }
+
+    @ResponseBody
+    @RequestMapping("fixPerson")
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @SystemLog(module="系统管理",methods="公司管理-分配员工")//凡需要处理业务逻辑的.都需要记录操作日志
+    public String fixPerson() throws Exception {
+        String companyId = getPara("companyId");
+        try {
+            if(Common.isEmpty(getPara("companyId"))){
+                String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
+                UserFormMap userFormMap = userMapper.findbyFrist("id",userId,UserFormMap.class);
+                PersonFormMap personFormMap = personMapper.findByAttribute("id",userFormMap.get("personId").toString(),PersonFormMap.class).get(0);
+                companyId = personFormMap.get("companyId").toString();
+            }
+            String ids = getPara("ids");
+            if (Common.isNotEmpty(ids)) {
+                if(ids.contains(",")) {
+                    String[] idss = ids.split(",");
+                    for (int i = 0; i < idss.length; i++) {
+                        UserFormMap userFormMap = new UserFormMap();
+                        userFormMap.put("personId", idss[i]);
+                        UserFormMap user = userMapper.findByPersonId(userFormMap);
+                        user.set("role", 5);
+                        userMapper.editEntity(user);
+                        PersonFormMap person = new PersonFormMap();
+                        person = personMapper.findbyFrist("id", idss[i], PersonFormMap.class);
+                        person.set("type", 2);
+                        person.set("companyId", companyId);
+                        personMapper.editEntity(person);
+                    }
+                }else{
+                    UserFormMap userFormMap = new UserFormMap();
+                    userFormMap.put("personId", ids);
+                    UserFormMap user = userMapper.findByPersonId(userFormMap);
+                    user.set("role", 5);
+                    userMapper.editEntity(user);
+                    PersonFormMap person = new PersonFormMap();
+                    person = personMapper.findbyFrist("id", ids.toString(), PersonFormMap.class);
+                    person.set("type", 2);
+                    person.set("companyId", companyId);
+                    personMapper.editEntity(person);
+                }
+            }
+        } catch (Exception e) {
+            throw new SystemException("分配员工异常");
+        }
+        return "success";
+    }
+
     /**
-     * 验证公司是否存在
+     * 验证用户名是否存在
      *
      * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
      * @param name
      * @return
      */
-    @RequestMapping("isExist")
+    @RequestMapping("isUserExist")
     @ResponseBody
-    public boolean isExist(String name) {
-        CompanyFormMap account = personMapper.findbyFrist("name", name, CompanyFormMap.class);
-        if (account == null) {
+    public boolean isUserExist(String name,String id) {
+        UserFormMap user = new UserFormMap();
+        if(id!=null){
+            user = userMapper.findbyFrist("personId", id, UserFormMap.class);
+        }
+        UserFormMap account = userMapper.findbyFrist("username", name, UserFormMap.class);
+        Boolean isTrue = (account!=null && user.size()!=0) ? (((account.get("username").toString()).equals(user.get("username").toString())) ? true : false) : (account==null) ? true : false;
+        if (account == null  || isTrue) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 验证用户手机号是否存在
+     *
+     * @author lanyuan Email：mmm333zzz520@163.com date：2014-2-19
+     * @param name
+     * @return
+     */
+    @RequestMapping("isMobileExist")
+    @ResponseBody
+    public boolean isMobileExist(String name,String id) {
+        PersonFormMap person = new PersonFormMap();
+        if(id!=null){
+            person = personMapper.findbyFrist("id", id, PersonFormMap.class);
+        }
+        PersonFormMap personFormMap = personMapper.findbyFrist("mobile", name, PersonFormMap.class);
+        Boolean isTrue = (personFormMap!=null && person.size()!=0) ? (((personFormMap.get("mobile").toString()).equals(person.get("mobile").toString())) ? true : false) : (personFormMap==null) ? true : false;
+        if (personFormMap == null || isTrue) {
             return true;
         } else {
             return false;

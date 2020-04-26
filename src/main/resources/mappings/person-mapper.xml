@@ -15,11 +15,11 @@
 		type,
 		telephone,
 		fax,
-		mobile1,
-		mobile2,
+		mobile,
 		country,
 		province,
 		city,
+		identityNum,
 		realAddress,
 		(select name from t_dept where t_dept.id = (select t_dept_person.deptId from t_dept_person where t_dept_person.personId = t_person.id)) deptName,
 		IF((select t_dept_person.isLeader from t_dept_person where t_dept_person.personId = t_person.id and t_dept_person.isLeader is true),'领导','') isLeader,
@@ -32,12 +32,49 @@
 	<include refid="selectId"/>
 	 from t_person
 		where state is true
-		and companyId = ${companyId}
+		and type != 1
+		<if test="companyId != null and companyId != ''">
+			and companyId = #{companyId}
+		</if>
 		<if test="name != null and name != ''">
-			and name like '%${name}%'
+			and name like #{name}
 		</if>
 		<if test="column != null">
-			order by ${column} ${sort}
+			order by #{column} #{sort}
 		</if>
+	</select>
+
+	<select id="findCompanyManager" resultType="com.ceecloud.entity.PersonFormMap">
+		select
+		<include refid="selectId"/>
+		from t_person
+		where state is true
+		and type = 1
+		<if test="companyId != null and companyId != ''">
+			and companyId = #{companyId}
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+
+	<select id="findFreePerson" resultType="com.ceecloud.entity.PersonFormMap">
+		select
+		<include refid="selectId"/>
+		from t_person
+		where state is true and id in (select personId from t_user where role = 6 and state = 1)
+		<if test="name != null and name != ''">
+			and name like #{name}
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+
+	<select id="findById" resultType="com.ceecloud.entity.PersonFormMap">
+		select
+		<include refid="selectId" />
+		from t_person
+		where id = #{id}
 	</select>
 </mapper>

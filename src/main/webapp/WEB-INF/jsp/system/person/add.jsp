@@ -29,6 +29,7 @@ label[class^="btn btn-default"] {
 	<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
 	<form id="form" name="form" class="form-horizontal" method="post"
 		action="${ctx}/person/addEntity.shtml">
+		<input type="hidden" id="companyId" name="personFormMap.companyId" value="${companyId}"/>
 		<section class="panel panel-default">
 		<div class="panel-body">
 			<div class="form-group">
@@ -36,7 +37,7 @@ label[class^="btn btn-default"] {
 					<label class="control-label">用户名</label>
 				</div>
 				<div class="col-sm-9">
-					<input type="text" class="form-control"
+					<input type="text" class="form-control checkacc"
 						placeholder="请输入用户名" name="personFormMap.username" id="username">
 				</div>
 			</div>
@@ -44,15 +45,25 @@ label[class^="btn btn-default"] {
 			<div class="form-group">
 				<label class="col-sm-3 control-label">姓名</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control checkacc"
+					<input type="text" class="form-control"
 						placeholder="请输入姓名" name="personFormMap.name" id="name">
 				</div>
 			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">身份证</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"
+						   placeholder="请输入身份证号" name="personFormMap.identityNum" id="identityNum">
+				</div>
+			</div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">密码</label>
 				<div class="col-sm-9" style="color: red;">
-					默认密码为:123456789
+					默认密码为:123456
 				</div>
 			</div>
 			<%--<div class="line line-dashed line-lg pull-in"></div>
@@ -61,7 +72,7 @@ label[class^="btn btn-default"] {
 			<div class="form-group">
 				<label class="col-sm-3 control-label">邮箱</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control checkacc"
+					<input type="text" class="form-control"
                    		placeholder="请输入邮箱" name="personFormMap.email" id="email"/>
 				</div>
 			</div>
@@ -83,18 +94,10 @@ label[class^="btn btn-default"] {
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">手机号1</label>
+				<label class="col-sm-3 control-label">手机号</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" placeholder="请输入手机号1"
-						   name="personFormMap.mobile1" id="mobile1">
-				</div>
-			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">手机号2</label>
-				<div class="col-sm-9">
-					<input type="text" class="form-control" placeholder="请输入手机号2"
-						   name="personFormMap.mobile2" id="mobile2">
+					<input type="text" class="form-control" placeholder="请输入手机号"
+						   name="personFormMap.mobile" id="mobile">
 				</div>
 			</div>
 		</div>

@@ -86,14 +86,14 @@
 						<div class="row m-l-none m-r-none m-b-n-xs text-center">
 							<div class="col-xs-4">
 								<div class="padder-v">
-									<span class="m-b-xs h4 block text-white">245</span> <small
-										class="text-muted">Followers</small>
+									<span class="m-b-xs h4 block text-white">245</span>
+									<small class="text-muted">Followers</small>
 								</div>
 							</div>
 							<div class="col-xs-4 dk">
 								<div class="padder-v">
-									<span class="m-b-xs h4 block text-white">55</span> <small
-										class="text-muted">Likes</small>
+									<span class="m-b-xs h4 block text-white">55</span>
+									<small class="text-muted">Likes</small>
 								</div>
 							</div>
 							<div class="col-xs-4">
@@ -189,7 +189,7 @@
 						</a></li>
 						<li><a href="docs.html">Help</a></li>
 						<li class="divider"></li>--%>
-						<li><a href="http://login.ceecloud.cn:8888/cas/logout?service=http://manager.ceecloud.cn:8080/">退出</a></li>
+						<li><a href="userlogin/logout.shtml">退出</a></li>
 					</ul></li>
 			</ul>
 		</header>
@@ -230,6 +230,9 @@
 														</i>
 													</c:if> <c:if test="${s.index==4}">
 														<i class="fa fa-th-list icon"> <b class="bg-success"></b>
+														</i>
+													</c:if> <c:if test="${s.index<10 && s.index>4}">
+														<i class="fa fa-book icon"> <b class="bg-info"></b>
 														</i>
 													</c:if> <span class="pull-right"> <i
 														class="fa fa-angle-down text"></i> <i

@@ -36,7 +36,7 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control checkacc"
 						placeholder="请输入用户名" value="${user.username}"
-						name="userFormMap.accountName" id="accountName" readonly="readonly">
+						name="userFormMap.username" id="username" readonly="readonly">
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
@@ -45,9 +45,19 @@
 				<div class="col-sm-9">
 					<input type="text" class="form-control"
 						   placeholder="请输入姓名" value="${user.name}"
-						   name="userFormMap.userName" id="userName">
+						   name="userFormMap.name" id="name">
 				</div>
 			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">身份证号</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" placeholder="请输入身份证号码" value="${user.identityNum}"
+						   name="userFormMap.identityNum" id="identityNum">
+				</div>
+			</div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">邮箱</label>
@@ -57,6 +67,7 @@
 						name="userFormMap.email" id="email">
 				</div>
 			</div>
+
 			<div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">角色名</label>
@@ -107,6 +118,26 @@
 					<input type="text" class="form-control"
 						   placeholder="请输入手机号" value="${user.mobile}"
 						   name="userFormMap.mobile" id="mobile">
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">一卡通卡号</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"
+						   placeholder="请输入一卡通卡号" value="${user.cardNumber}"
+						   name="userFormMap.cardNumber" id="cardNumber">
+				</div>
+			</div>
+
+			<div class="line line-dashed line-lg pull-in"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">一卡通密码</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"
+						   placeholder="请输入一卡通密码" value="${user.cardPassword}"
+						   name="userFormMap.cardPassword" id="cardPassword">
 				</div>
 			</div>
 		</div>

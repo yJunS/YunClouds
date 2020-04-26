@@ -11,5 +11,5 @@ public class InitController {
 	public void init() {
 		System.err.println("00000000000");
 	}
-	 
+
 }

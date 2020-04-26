@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceecloud.mapper.CardMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<sql id="selectId">
+		id,
+		cardNumber,
+		password,
+		(select userId from t_user_card where t_card.id = t_user_card.cardId) userId,
+		(select name from t_person where id = (select personId from t_user where id = (select userId from t_user_card where t_card.id = t_user_card.cardId))) name
+	</sql>
+
+	<select id="findCardPage" resultType="com.ceecloud.entity.CardFormMap">
+		select
+		<include refid="selectId" />
+		from t_card
+		where 1 = 1
+		<if test=" cardNumber != null and cardNumber != ''">
+			and cardNumber like #{cardNumber}
+		</if>
+		<if test="column != null">
+			order by #{column} #{sort}
+		</if>
+	</select>
+
+
+
+</mapper>

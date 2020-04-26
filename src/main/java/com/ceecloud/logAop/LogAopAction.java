@@ -3,7 +3,9 @@ package com.ceecloud.logAop;
 
 import com.ceecloud.annotation.SystemLog;
 import com.ceecloud.entity.LogFormMap;
+import com.ceecloud.entity.UserFormMap;
 import com.ceecloud.mapper.LogMapper;
+import com.ceecloud.mapper.UserMapper;
 import com.ceecloud.util.Common;
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.JoinPoint;
@@ -34,6 +36,9 @@ public  class LogAopAction {
      private  static  final Logger logger = LoggerFactory.getLogger(LogAopAction. class);
      @Inject
  	private LogMapper logMapper;
+
+	@Inject
+	private UserMapper userMapper;
      //Controller层切点
     @Pointcut("@annotation(com.ceecloud.annotation.SystemLog)")
      public  void controllerAspect() {
@@ -62,7 +67,9 @@ public  class LogAopAction {
 		try {
 			map=getControllerMethodDescription(point);
 			// 登录名
-			user = SecurityUtils.getSubject().getPrincipal().toString();
+			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
+			UserFormMap userFormMap = userMapper.findbyFrist("id",userId,UserFormMap.class);
+			user = userFormMap.get("username").toString();
 			if (Common.isEmpty(user)) {
 				user = "无法获取登录用户信息！";
 			}
@@ -107,7 +114,9 @@ public  class LogAopAction {
 		}
 		try {
 			// 登录名
-			user = SecurityUtils.getSubject().getPrincipal().toString();
+			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
+			UserFormMap userFormMap = userMapper.findbyFrist("id",userId,UserFormMap.class);
+			user = userFormMap.get("username").toString();
 			if (Common.isEmpty(user)) {
 				user = "无法获取登录用户信息！";
 			}

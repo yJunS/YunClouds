@@ -31,7 +31,7 @@ public class HttpClientUtil {
      * @param queryString 请求的查询参数,可以为null
      * @return 返回请求响应的HTML
      */
-    public static JSONObject doGet(String url, String queryString) {
+    public JSONObject doGet(String url, String queryString) {
         JSONObject response = null;
         HttpClient client = new HttpClient();
         HttpMethod method = new GetMethod(url);
@@ -60,7 +60,7 @@ public class HttpClientUtil {
      * @param params 请求的查询参数,可以为null
      * @return 返回请求响应的HTML
      */
-    public static String doPost(String url, Map<String, String> params) {
+    public String doPost(String url, Map<String, String> params) {
         String response = null;
         HttpClient client = new HttpClient();
         HttpMethod method = new PostMethod(url);
@@ -90,8 +90,8 @@ public class HttpClientUtil {
     }
 
 
-    public static void main(String[] args) {
-        String x = doPost("http://localhost/CasUserSync_syncCasUser.action", new HashMap());
+    public void main(String[] args) {
+        String x = doPost("http://mymeeting.peony.cn/StatisticsTotal_getTotalParticipantTime1.action", new HashMap());
         System.out.println(x);
     }
 }

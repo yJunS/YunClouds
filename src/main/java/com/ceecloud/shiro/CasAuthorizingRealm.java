@@ -1,5 +1,6 @@
 package com.ceecloud.shiro;
 
+import com.ceecloud.entity.ResUserFormMap;
 import com.ceecloud.entity.ResourcesFormMap;
 import com.ceecloud.entity.UserFormMap;
 import com.ceecloud.entity.UserLoginFormMap;
@@ -85,7 +86,9 @@ public class CasAuthorizingRealm extends CasRealm {
 	            List<UserFormMap> userFormMapList = this.userMapper.findByUsername(userFormMap1);
 	            
 	            //获取当前系统所对应的左侧菜单集合
-				List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(userFormMapList.get(0).get("id").toString());
+				ResUserFormMap resUserFormMap = new ResUserFormMap();
+				resUserFormMap.set("userId",userFormMapList.get(0).get("id"));
+				List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(resUserFormMap);
 				ResourcesFormMap resourcesFormMap = new ResourcesFormMap();
 				resourcesFormMap.put("roleId",userFormMapList.get(0).get("role"));
 				List<ResourcesFormMap> rs1 = resourcesMapper.findRes(resourcesFormMap);
@@ -132,7 +135,9 @@ public class CasAuthorizingRealm extends CasRealm {
 		if(user != null) {
 
 			//获取当前系统所对应的左侧菜单集合
-			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(user.get("id").toString());
+			ResUserFormMap resUserFormMap = new ResUserFormMap();
+			resUserFormMap.set("userId",user.get("id"));
+			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(resUserFormMap);
 			ResourcesFormMap resourcesFormMap = new ResourcesFormMap();
 			resourcesFormMap.put("roleId",user.get("role"));
 			List<ResourcesFormMap> rs1 = resourcesMapper.findRes(resourcesFormMap);

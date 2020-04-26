@@ -18,15 +18,92 @@ $(function() {
 							return false;
 						});
 					} else {
-						if(data == "error"){
-							alert("不能选择多个角色");
-						}else{
+                        if(data == "error"){
+                            layer.alert("不能选择多个角色");
+                        }else if(data == "selectError"){
+                            layer.alert("请选择角色");
+                        }else{
 							layer.msg('更新失败！', 3);
 						}
 					}
 				}
 			});
 		},
+        rules : {
+            "userFormMap.username" : {
+                required : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isUserExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#username").val();
+                        },
+						id : function () {
+							return $("#id").val();
+                        }
+                    }
+                }
+            },
+            "userFormMap.name" : {
+                required : true
+            },
+            "userFormMap.identityNum" : {
+                required : true,
+                isIdCardNo : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isidentityNumExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#identityNum").val();
+                        },
+                        id : function () {
+                            return $("#id").val();
+                        }
+                    }
+                }
+            },
+            "userFormMap.mobile" : {
+                isMobile : true,
+                remote : { // 异步验证是否存在
+                    type : "POST",
+                    url : 'isMobileExist.shtml',
+                    data : {
+                        name : function() {
+                            return $("#mobile").val();
+                        },
+                        id : function () {
+                            return $("#id").val();
+                        }
+                    }
+                }
+            },
+            "userFormMap.email" : {
+                email:true
+            }
+        },
+        messages : {
+            "userFormMap.username" : {
+                required : "请输入用户名",
+                remote : "该用户名已经存在"
+            },
+            "userFormMap.name" : {
+                required : "请输入姓名"
+            },
+            "userFormMap.identityNum" : {
+                required : "请输入身份证号码",
+                isIdCardNo : "请输入正确的身份证号码",
+                remote : "该身份证号已经存在"
+            },
+            "userFormMap.mobile" : {
+                isMobile : "请输入正确的手机号",
+                remote : "该手机号已存在"
+            },
+            "userFormMap.email" : {
+                email:"请输入正确的email"
+            }
+        },
 		errorPlacement : function(error, element) {// 自定义提示错误位置
 			$(".l_err").css('display', 'block');
 			// element.css('border','3px solid #FFCCCC');

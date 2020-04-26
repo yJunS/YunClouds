@@ -61,6 +61,8 @@ public class DeptController extends BaseController {
         ResourcesFormMap resFormMap1 = new ResourcesFormMap();
         resFormMap1.put("parentId",getPara("id"));
         resFormMap1.put("roleId",userFormMap.get("role"));
+        String order = " order by level asc";
+        resFormMap1.put("$orderby", order);
         List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
         for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
             Object o =resFormMap.get("description");
@@ -108,6 +110,8 @@ public class DeptController extends BaseController {
         ResourcesFormMap resFormMap1 = new ResourcesFormMap();
         resFormMap1.put("parentId",getPara("id"));
         resFormMap1.put("roleId",userFormMap.get("role"));
+        String order = " order by level asc";
+        resFormMap1.put("$orderby", order);
         List<ResourcesFormMap> resourcesFormMapList1 =  resourcesMapper.findRes(resFormMap1);
         for (ResourcesFormMap resFormMap : resourcesFormMapList1) {
             Object o =resFormMap.get("description");

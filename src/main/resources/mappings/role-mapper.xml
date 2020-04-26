@@ -11,6 +11,7 @@
 		id,
 		roleName,
 		description,
+		roleKey,
 		state
 	</sql>
 	<select id="seletUserRole" resultType="com.ceecloud.entity.RoleFormMap">

@@ -1,6 +1,7 @@
 package com.ceecloud.shiro;
 
 
+import com.ceecloud.entity.ResUserFormMap;
 import com.ceecloud.entity.ResourcesFormMap;
 import com.ceecloud.entity.UserFormMap;
 import com.ceecloud.entity.UserLoginFormMap;
@@ -95,7 +96,9 @@ public class MyRealm extends CasRealm {
 		if (loginName != null) {
 			String userId = SecurityUtils.getSubject().getSession().getAttribute("userSessionId").toString();
 			UserFormMap userFormMap = userMapper.findbyFrist("id",userId,UserFormMap.class);
-			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(userId);
+			ResUserFormMap resUserFormMap = new ResUserFormMap();
+			resUserFormMap.set("userId", userId);
+			List<ResourcesFormMap> rs = resourcesMapper.findUserResourcess(resUserFormMap);
 			ResourcesFormMap resourcesFormMap = new ResourcesFormMap();
 			resourcesFormMap.put("roleId",userFormMap.get("role"));
 			List<ResourcesFormMap> rs1 = resourcesMapper.findRes(resourcesFormMap);
@@ -176,6 +179,7 @@ public class MyRealm extends CasRealm {
 				Session session = SecurityUtils.getSubject().getSession();
 				session.setAttribute("userSession", userFormMaps.get(0));
 				session.setAttribute("userSessionId", userFormMaps.get(0).get("id"));
+				session.setTimeout(-1000l);
 				UserLoginFormMap userLogin = new UserLoginFormMap();
 				userLogin.put("userId", session.getAttribute("userSessionId"));
 				userLogin.put("accountName", username);
