@@ -11,7 +11,7 @@
   <properties>
     <cas-client.version>3.6.1</cas-client.version>
     <spring.version>5.3.0</spring.version>
-    <shiro.version>1.6.0</shiro.version>
+    <shiro.version>1.7.0</shiro.version>
     <mybatis.version>3.5.6</mybatis.version>
     <mybatis-spring.version>2.0.5</mybatis-spring.version>
     <mysql.version>8.0.22</mysql.version>
