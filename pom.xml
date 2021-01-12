@@ -10,7 +10,7 @@
 
   <properties>
     <cas-client.version>3.6.2</cas-client.version>
-    <spring.version>5.3.2</spring.version>
+    <spring.version>5.3.3</spring.version>
     <shiro.version>1.7.0</shiro.version>
     <mybatis.version>3.5.6</mybatis.version>
     <mybatis-spring.version>2.0.6</mybatis-spring.version>
