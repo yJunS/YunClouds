@@ -14,7 +14,7 @@
     <shiro.version>1.7.1</shiro.version>
     <mybatis.version>3.5.7</mybatis.version>
     <mybatis-spring.version>2.0.6</mybatis-spring.version>
-    <mysql.version>8.0.25</mysql.version>
+    <mysql.version>8.0.26</mysql.version>
     <druid.version>1.0.9</druid.version>
     <junit.version>4.13.2</junit.version>
     <log4j.version>1.2.17</log4j.version>
